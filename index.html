@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UQ Diet-Disease Relationship Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --uq-purple: #51247A;
+    --uq-purple-light: #6b3fa0;
+    --uq-purple-dark: #3a1856;
+    --uq-gold: #BB9D65;
+    --uq-gold-light: #d4b97e;
+    --uq-gold-pale: #f5eddc;
+    --bg: #f8f6fb;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --text-light: #5a5a7a;
+    --border: #e0d6f0;
+    --step1: #51247A;
+    --step2: #6b3fa0;
+    --step3: #8b5cc2;
+    --step4: #BB9D65;
+    --success: #2d7d4e;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(81,36,122,0.10);
+    --shadow-deep: 0 8px 40px rgba(81,36,122,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, var(--uq-purple-dark) 0%, var(--uq-purple) 55%, #6b3fa0 100%);
+    color: white;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 32px rgba(81,36,122,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(187,157,101,0.15);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 20%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-left { position: relative; z-index: 1; }
+  .uq-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(187,157,101,0.25);
+    border: 1px solid var(--uq-gold);
+    border-radius: 30px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--uq-gold-light);
+    margin-bottom: 12px;
+  }
+  .uq-badge::before {
+    content: '●';
+    font-size: 8px;
+    color: var(--uq-gold);
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .header h1 span { color: var(--uq-gold-light); }
+  .header-sub {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 6px;
+    font-weight: 300;
+  }
+  .header-right { position: relative; z-index: 1; text-align: right; }
+  .clinic-label {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .clinic-label strong { color: var(--uq-gold-light); display: block; font-size: 15px; }
+
+  /* ── QUOTE TICKER ── */
+  .quote-bar {
+    background: var(--uq-gold-pale);
+    border-left: 5px solid var(--uq-gold);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 56px;
+  }
+  .quote-icon {
+    font-size: 24px;
+    color: var(--uq-gold);
+    flex-shrink: 0;
+  }
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--uq-purple);
+    transition: opacity 0.5s;
+    flex: 1;
+  }
+  .quote-author {
+    font-size: 12px;
+    color: var(--uq-gold);
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-light);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .tab-btn:hover { background: var(--uq-gold-pale); color: var(--uq-purple); }
+  .tab-btn.active {
+    background: var(--uq-purple);
+    color: white;
+    box-shadow: 0 2px 10px rgba(81,36,122,0.3);
+  }
+  .tab-btn .tab-icon { font-size: 16px; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── CONDITION SELECTOR ── */
+  .selector-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .selector-label {
+    font-weight: 600;
+    color: var(--uq-purple);
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .condition-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .condition-select:focus { border-color: var(--uq-purple); }
+  .condition-hint {
+    background: var(--uq-gold-pale);
+    border: 1px solid var(--uq-gold);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--uq-purple);
+    line-height: 1.5;
+    flex: 2;
+    min-width: 200px;
+  }
+  .condition-hint strong { color: var(--uq-gold); }
+
+  /* ── AFFIRMATION CARD ── */
+  .affirmation {
+    background: linear-gradient(120deg, var(--uq-purple) 0%, var(--uq-purple-light) 100%);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: white;
+    box-shadow: var(--shadow-deep);
+  }
+  .affirmation-icon { font-size: 28px; flex-shrink: 0; }
+  .affirmation-text { font-size: 14px; line-height: 1.6; }
+  .affirmation-text strong { font-size: 16px; color: var(--uq-gold-light); display: block; margin-bottom: 4px; }
+
+  /* ── FUNNEL STEPS ── */
+  .funnel-header {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .funnel-icon { font-size: 32px; }
+  .funnel-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--uq-purple); }
+  .funnel-subtitle { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+
+  .steps-grid { display: flex; flex-direction: column; gap: 16px; }
+
+  .step-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .step-card:hover { box-shadow: var(--shadow-deep); }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .step-card:nth-child(1) .step-header { background: linear-gradient(90deg, #3a1856, var(--uq-purple)); color: white; }
+  .step-card:nth-child(2) .step-header { background: linear-gradient(90deg, var(--uq-purple), var(--uq-purple-light)); color: white; }
+  .step-card:nth-child(3) .step-header { background: linear-gradient(90deg, var(--uq-purple-light), #9b6bcb); color: white; }
+  .step-card:nth-child(4) .step-header { background: linear-gradient(90deg, var(--uq-gold), var(--uq-gold-light)); color: var(--uq-purple-dark); }
+
+  .step-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .step-card:nth-child(4) .step-num { background: rgba(81,36,122,0.15); }
+
+  .step-meta { flex: 1; }
+  .step-title { font-weight: 600; font-size: 15px; }
+  .step-desc { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+  .step-toggle {
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+  .step-card.open .step-toggle { transform: rotate(180deg); }
+
+  .step-body {
+    padding: 0 22px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.3s;
+  }
+  .step-card.open .step-body { max-height: 600px; padding: 18px 22px 22px; }
+
+  .step-guide {
+    background: var(--bg);
+    border-left: 4px solid var(--uq-gold);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.7;
+  }
+  .step-guide strong { color: var(--uq-purple); }
+  .step-guide em { color: var(--uq-gold); font-style: normal; font-weight: 500; }
+
+  .step-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+    resize: vertical;
+    outline: none;
+    transition: border 0.2s;
+    line-height: 1.6;
+  }
+  .step-textarea:focus { border-color: var(--uq-purple); }
+  .step-textarea::placeholder { color: #b0aac0; }
+
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 5px;
+  }
+
+  /* ── PATIENT NAME FIELD ── */
+  .patient-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .patient-field {
+    flex: 1;
+    min-width: 180px;
+    padding: 11px 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    outline: none;
+    transition: border 0.2s;
+  }
+  .patient-field:focus { border-color: var(--uq-purple); }
+
+  /* ── DOWNLOAD AREA ── */
+  .download-area {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .download-info { font-size: 14px; color: var(--text-light); }
+  .download-info strong { color: var(--uq-purple); display: block; font-size: 16px; margin-bottom: 4px; }
+  .download-btn {
+    background: linear-gradient(135deg, var(--uq-purple), var(--uq-purple-light));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(81,36,122,0.3);
+  }
+  .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(81,36,122,0.4); }
+  .download-btn:active { transform: translateY(0); }
+  .clear-btn {
+    background: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .clear-btn:hover { border-color: #e05757; color: #e05757; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px 22px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-label { font-size: 13px; font-weight: 600; color: var(--uq-purple); white-space: nowrap; }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--uq-purple), var(--uq-gold));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-pct { font-size: 13px; font-weight: 600; color: var(--uq-gold); min-width: 38px; text-align: right; }
+
+  /* ── CASE STUDIES ── */
+  .case-intro {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .case-intro-icon { font-size: 32px; flex-shrink: 0; }
+  .case-intro h2 { font-family: 'Playfair Display', serif; color: var(--uq-purple); font-size: 1.3rem; margin-bottom: 6px; }
+  .case-intro p { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+  .cases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 24px; }
+
+  .case-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .case-card:hover { box-shadow: var(--shadow-deep); transform: translateY(-3px); }
+
+  .case-card-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .case-card:nth-child(1) .case-card-header { background: linear-gradient(120deg, #3a1856, #51247A); }
+  .case-card:nth-child(2) .case-card-header { background: linear-gradient(120deg, #1a3a5c, #2d5f8e); }
+  .case-card:nth-child(3) .case-card-header { background: linear-gradient(120deg, #3d1a0a, #8b3a1a); }
+
+  .case-avatar {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .case-name { color: white; font-weight: 600; font-size: 16px; }
+  .case-tag {
+    background: rgba(187,157,101,0.3);
+    border: 1px solid var(--uq-gold);
+    color: var(--uq-gold-light);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .case-card-body { padding: 18px 20px; }
+  .case-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--uq-gold);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+  .case-section-title:first-child { margin-top: 0; }
+  .case-text { font-size: 13.5px; color: var(--text); line-height: 1.65; }
+  .case-text li { margin-left: 16px; margin-bottom: 3px; }
+
+  .case-expand-btn {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    background: var(--bg);
+    color: var(--uq-purple);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .case-expand-btn:hover { background: var(--uq-gold-pale); }
+
+  .case-expanded {
+    display: none;
+    padding: 16px 20px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .case-expanded.open { display: block; }
+
+  .ddr-scaffold {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .scaffold-row {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .scaffold-row:last-child { border-bottom: none; }
+  .scaffold-row strong { color: var(--uq-purple); display: block; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
+  .scaffold-text { color: var(--text-light); line-height: 1.6; }
+  .scaffold-prompt {
+    background: var(--uq-gold-pale);
+    border-left: 3px solid var(--uq-gold);
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    color: var(--uq-purple);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  .use-case-btn {
+    background: linear-gradient(135deg, var(--uq-purple), var(--uq-purple-light));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .use-case-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ── HOW IT WORKS / REFERENCE ── */
+  .ref-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 26px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .ref-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--uq-purple);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .funnel-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .funnel-tier {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin: 3px 0;
+    transition: transform 0.2s;
+  }
+  .funnel-tier:hover { transform: translateX(4px); }
+  .funnel-tier:nth-child(1) { background: linear-gradient(90deg, #3a1856, #51247A); color: white; }
+  .funnel-tier:nth-child(2) { background: linear-gradient(90deg, #51247A, #6b3fa0); color: white; max-width: 450px; }
+  .funnel-tier:nth-child(3) { background: linear-gradient(90deg, #6b3fa0, #9b6bcb); color: white; max-width: 400px; }
+  .funnel-tier:nth-child(4) { background: linear-gradient(90deg, var(--uq-gold), var(--uq-gold-light)); color: var(--uq-purple-dark); max-width: 350px; }
+  .funnel-tier-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .funnel-tier:nth-child(4) .funnel-tier-num { background: rgba(81,36,122,0.15); }
+  .funnel-tier-text { font-size: 14px; font-weight: 500; }
+  .funnel-tier-sub { font-size: 11px; opacity: 0.8; }
+
+  /* ── NOTIFICATION TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--uq-purple);
+    color: white;
+    border-radius: 12px;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(81,36,122,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1000;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── CONDITION CHIPS ── */
+  .condition-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 0 4px;
+  }
+  .cond-chip {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 2px solid var(--border);
+    background: var(--white);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cond-chip:hover { border-color: var(--uq-purple); color: var(--uq-purple); }
+  .cond-chip.active { background: var(--uq-purple); color: white; border-color: var(--uq-purple); }
+
+  @media (max-width: 680px) {
+    .header { padding: 20px; flex-direction: column; gap: 14px; }
+    .header-right { text-align: left; width: 100%; }
+    .header h1 { font-size: 1.5rem; }
+    .selector-section { flex-direction: column; }
+    .download-area { flex-direction: column; }
+    .quote-bar { padding: 14px 20px; }
+    .main { padding: 20px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="uq-badge">UQ Nutrition &amp; Dietetics Clinic</div>
+    <h1>Diet–Disease<br><span>Relationship Builder</span></h1>
+    <div class="header-sub">Personalised DDR Intervention Worksheet</div>
+  </div>
+  <div class="header-right">
+    <div class="clinic-label">
+      <strong>✦ The Funnel Approach</strong>
+      Broad → Personalised → Dietary Link → Goal
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE BAR -->
+<div class="quote-bar">
+  <span class="quote-icon">✦</span>
+  <span class="quote-text" id="quoteText">Loading…</span>
+  <span class="quote-author" id="quoteAuthor"></span>
+</div>
+
+<!-- TABS -->
+<div class="main">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('builder')" id="tab-builder">
+      <span class="tab-icon">📝</span> DDR Builder
+    </button>
+    <button class="tab-btn" onclick="switchTab('cases')" id="tab-cases">
+      <span class="tab-icon">🩺</span> Case Studies
+    </button>
+    <button class="tab-btn" onclick="switchTab('guide')" id="tab-guide">
+      <span class="tab-icon">📚</span> Funnel Guide
+    </button>
+  </div>
+
+  <!-- ══ TAB: BUILDER ══ -->
+  <div class="tab-content active" id="content-builder">
+
+    <!-- Affirmation -->
+    <div class="affirmation" id="affirmationCard">
+      <div class="affirmation-icon">⭐</div>
+      <div class="affirmation-text">
+        <strong id="affirmTitle">You've got this!</strong>
+        <span id="affirmBody">Every expert was once a beginner. Trust your training, lean into the process, and remember — your patients are lucky to have a practitioner who cares this much.</span>
+      </div>
+    </div>
+
+    <!-- Patient + Condition row -->
+    <div class="selector-section">
+      <span class="selector-label">🧑‍⚕️ Patient Name:</span>
+      <input type="text" class="patient-field" id="patientName" placeholder="e.g. Margaret, 58" oninput="updateProgress()" />
+      <span class="selector-label">📋 Condition:</span>
+      <select class="condition-select" id="conditionSelect" onchange="conditionChanged()">
+        <option value="">— Select a condition —</option>
+        <option value="t2dm">Type 2 Diabetes Mellitus (T2DM)</option>
+        <option value="cvd">Cardiovascular Disease / Dyslipidaemia</option>
+        <option value="hypertension">Hypertension</option>
+        <option value="obesity">Obesity / Weight Management</option>
+        <option value="ckd">Chronic Kidney Disease (CKD)</option>
+        <option value="ida">Iron Deficiency Anaemia</option>
+        <option value="coeliac">Coeliac Disease</option>
+        <option value="osteoporosis">Osteoporosis</option>
+        <option value="ibs">Irritable Bowel Syndrome (IBS)</option>
+        <option value="protein">Inadequate Protein Intake</option>
+      </select>
+    </div>
+
+    <!-- Condition hint -->
+    <div id="conditionHintBox" class="condition-hint" style="margin-bottom:20px; display:none;">
+      <strong id="condHintTitle">Key Nutrients to Address:</strong>
+      <div id="condHintBody"></div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <span class="progress-label">🎯 Completion</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+
+    <!-- Funnel header -->
+    <div class="funnel-header">
+      <span class="funnel-icon">🔽</span>
+      <div>
+        <div class="funnel-title">The DDR Funnel</div>
+        <div class="funnel-subtitle">Work through each step — click a step to expand and write your DDR. Remember to ask what the patient already knows before explaining!</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-grid">
+
+      <!-- STEP 1 -->
+      <div class="step-card" id="stepCard1">
+        <div class="step-header" onclick="toggleStep(1)">
+          <div class="step-num">1</div>
+          <div class="step-meta">
+            <div class="step-title">Broad Problem / Condition Explanation</div>
+            <div class="step-desc">Explain the disease/condition in general terms — what it is, why it matters</div>
+          </div>
+          <span class="step-toggle">▼</span>
+        </div>
+        <div class="step-body">
+          <div class="step-guide">
+            <strong>🗣️ What to cover:</strong><br>
+            Describe the condition/nutrient issue in general, accessible language. Use phrases like:<br>
+            <em>"Our bodies require ___ to function… when we develop ___ or don't consume enough ___…"</em><br><br>
+            ✦ Include key physiological context (e.g., how insulin resistance develops)<br>
+            ✦ Mention relevant symptoms or common presentations<br>
+            ✦ Keep it jargon-free — imagine explaining to a curious friend
+          </div>
+          <textarea class="step-textarea" id="step1text" placeholder="e.g. Our bodies use glucose from the food we eat as our primary energy source. Insulin, a hormone produced by the pancreas, acts like a key that unlocks our cells to let glucose in. In type 2 diabetes, our cells become resistant to insulin — meaning glucose stays in the bloodstream instead of being used for energy. Over time, this elevated blood glucose can damage blood vessels, nerves, and organs including the kidneys and eyes..." oninput="updateProgress(); countChars(1)"></textarea>
+          <div class="char-count" id="charCount1">0 characters</div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-card" id="stepCard2">
+        <div class="step-header" onclick="toggleStep(2)">
+          <div class="step-num">2</div>
+          <div class="step-meta">
+            <div class="step-title">Narrow Down — Link to the Client</div>
+            <div class="step-desc">Connect the general condition to THIS patient's specific presentation and findings</div>
+          </div>
+          <span class="step-toggle">▼</span>
+        </div>
+        <div class="step-body">
+          <div class="step-guide">
+            <strong>🔗 Personalise it:</strong><br>
+            Explain how the condition is showing up for THIS patient — reference their symptoms, blood results, lifestyle factors, and medical history.<br><br>
+            <em>"In your case, we can see that your [X] has been [finding], which likely explains the [symptom] you've been experiencing…"</em><br><br>
+            ✦ Use their name and specific details from the assessment<br>
+            ✦ If they continue without change — what might happen?<br>
+            ✦ Keep it empathetic, not alarming
+          </div>
+          <textarea class="step-textarea" id="step2text" placeholder="e.g. In your case Margaret, looking at your recent blood results, your HbA1c of 8.2% tells us your average blood glucose has been elevated over the past 3 months. This explains the fatigue you mentioned — your cells aren't efficiently using the glucose in your blood for energy. We also noticed you've gained 4kg since your last visit, which can make insulin resistance worse and further push up your blood sugar levels..." oninput="updateProgress(); countChars(2)"></textarea>
+          <div class="char-count" id="charCount2">0 characters</div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-card" id="stepCard3">
+        <div class="step-header" onclick="toggleStep(3)">
+          <div class="step-num">3</div>
+          <div class="step-meta">
+            <div class="step-title">Link to Diet / Nutrient Problem</div>
+            <div class="step-desc">Bridge the gap — show how current diet patterns are driving the condition</div>
+          </div>
+          <span class="step-toggle">▼</span>
+        </div>
+        <div class="step-body">
+          <div class="step-guide">
+            <strong>🥗 The dietary connection:</strong><br>
+            Use examples from the diet history to show the pathway from food choices → nutrient issue → condition worsening.<br><br>
+            <em>"The reason is because there is a lack of [food/nutrient] in your current diet… specifically when I look at your food diary, I can see [specific examples]…"</em><br><br>
+            ✦ Reference specific meals or patterns from their diet history<br>
+            ✦ Avoid blame — frame as "what we can work on"<br>
+            ✦ Introduce what a change could look like
+          </div>
+          <textarea class="step-textarea" id="step3text" placeholder="e.g. Looking at your food diary, I can see a few patterns that are likely contributing. Firstly, your breakfast is often skipped or just a piece of toast, which means your body goes into glucose-conservation mode and then gets a large glucose spike when you have your big lunch. Secondly, the afternoon snacks tend to be high in refined carbohydrates — the crackers and juice — which cause rapid blood sugar spikes without much fibre to slow them down. Additionally, the evening meal portions are quite large, which means a lot of glucose arriving in the bloodstream when activity is lowest..." oninput="updateProgress(); countChars(3)"></textarea>
+          <div class="char-count" id="charCount3">0 characters</div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-card" id="stepCard4">
+        <div class="step-header" onclick="toggleStep(4)">
+          <div class="step-num">4</div>
+          <div class="step-meta">
+            <div class="step-title">Key Goal(s) &amp; Positive Framing</div>
+            <div class="step-desc">Explain 1–3 clear, motivating goals and how each one will help</div>
+          </div>
+          <span class="step-toggle">▼</span>
+        </div>
+        <div class="step-body">
+          <div class="step-guide">
+            <strong>🎯 Set the stage for change:</strong><br>
+            Scaffold the intervention by naming the goals BEFORE diving into strategies. Briefly describe how each goal helps — this prevents everything blending into one overwhelming recommendation.<br><br>
+            <em>"So what we can work on today is: a) ___, b) ___, and c) ___. Let me walk you through each one and why it matters for your [condition/goal]…"</em><br><br>
+            ✦ Keep to 1–3 broad goals<br>
+            ✦ Ask the patient if they have anything they'd like to add<br>
+            ✦ Use hopeful, empowering language — change IS possible
+          </div>
+          <textarea class="step-textarea" id="step4text" placeholder="e.g. So based on everything we've discussed today, there are three things I'd love to work on with you. First, we'll look at spreading your carbohydrates more evenly across the day — eating smaller, more regular meals helps prevent those big glucose spikes and crashes. Second, we'll work on increasing the fibre content of your meals, particularly vegetables and wholegrains, which slow glucose absorption and also help with the fullness you mentioned wanting to feel. Third, we'll tackle a simple, sustainable breakfast that works with your busy mornings. Even a small protein-rich breakfast can make a real difference to your glucose control through the day. How does that sound to you?" oninput="updateProgress(); countChars(4)"></textarea>
+          <div class="char-count" id="charCount4">0 characters</div>
+        </div>
+      </div>
+
+    </div><!-- end steps-grid -->
+
+    <!-- Download area -->
+    <div class="download-area">
+      <div class="download-info">
+        <strong>💾 Save Your Work</strong>
+        Download your completed DDR as a text file to review, share with your CE, or paste into your chart notes.
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="clear-btn" onclick="clearAll()">🗑 Clear All</button>
+        <button class="download-btn" onclick="downloadDDR()">⬇ Download DDR (.txt)</button>
+      </div>
+    </div>
+
+  </div><!-- end builder tab -->
+
+
+  <!-- ══ TAB: CASE STUDIES ══ -->
+  <div class="tab-content" id="content-cases">
+
+    <div class="case-intro">
+      <span class="case-intro-icon">🏥</span>
+      <div>
+        <h2>Class Case Studies</h2>
+        <p>Work through these real-world patient scenarios as a group. Each case includes a clinical snapshot, diet history, and DDR scaffold to guide your discussion. Click <strong>"Load into Builder"</strong> to practice writing the DDR for each patient.</p>
+      </div>
+    </div>
+
+    <div class="cases-grid">
+
+      <!-- CASE 1 -->
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-avatar">👩‍🦳</div>
+          <div>
+            <div class="case-name">Margaret, 58 years</div>
+            <span class="case-tag">TYPE 2 DIABETES · DYSLIPIDAEMIA</span>
+          </div>
+        </div>
+        <div class="case-card-body">
+          <div class="case-section-title">Clinical Snapshot</div>
+          <div class="case-text">
+            Referred by GP for dietary counselling. HbA1c 8.2%, total cholesterol 6.4 mmol/L, LDL 4.1 mmol/L. BMI 31.2 kg/m². Menopausal. Reports fatigue, frequent urination, and poor sleep. Recently retired, more sedentary than prior years.
+          </div>
+          <div class="case-section-title">Diet History Highlights</div>
+          <div class="case-text">
+            <ul>
+              <li>Skips breakfast most days</li>
+              <li>Large lunch (pasta/sandwich + juice)</li>
+              <li>Afternoon snack: crackers, cheese, biscuits</li>
+              <li>Big dinner, often with wine (3–4 nights/wk)</li>
+              <li>Low vegetable intake; fruit 1–2 pcs/day</li>
+              <li>Rarely cooks with legumes or wholegrains</li>
+            </ul>
+          </div>
+          <div class="case-section-title">Key Nutritional Problems</div>
+          <div class="case-text">High refined carbohydrate load; low fibre; irregular meal timing; excess saturated fat; alcohol contributing to triglycerides.</div>
+        </div>
+        <button class="case-expand-btn" onclick="toggleCase(this)">📖 View DDR Scaffold ▾</button>
+        <div class="case-expanded">
+          <div class="ddr-scaffold">
+            <div class="scaffold-row">
+              <strong>Step 1 — Broad Explanation</strong>
+              <div class="scaffold-text">Explain T2DM: insulin resistance, glucose regulation, long-term consequences of hyperglycaemia. Include: dyslipidaemia and how it relates to cardiovascular risk.</div>
+              <div class="scaffold-prompt">💬 "Our bodies produce insulin to help cells use glucose for energy. In type 2 diabetes, our cells stop responding well to that signal…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 2 — Link to Margaret</strong>
+              <div class="scaffold-text">Reference her HbA1c (8.2%), fatigue, LDL result (4.1), and weight gain since menopause. Note hormonal changes worsening insulin sensitivity.</div>
+              <div class="scaffold-prompt">💬 "In your case Margaret, your HbA1c tells us your average blood sugar has been elevated for several months now. The fatigue you mentioned makes total sense…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 3 — Diet Link</strong>
+              <div class="scaffold-text">Connect skipped breakfast → large lunch glucose spike; high refined carbs + low fibre; alcohol → triglycerides; saturated fat in afternoon snacks → LDL.</div>
+              <div class="scaffold-prompt">💬 "When I look at your food diary, the skipped breakfast followed by the large carbohydrate lunch is likely causing significant glucose spikes…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 4 — Goals</strong>
+              <div class="scaffold-text">3 goals: (a) regular, carbohydrate-spread meals; (b) increase fibre via vegies/legumes/wholegrains; (c) reduce saturated fat in snacks and alcohol on weeknights.</div>
+              <div class="scaffold-prompt">💬 "Today I'd like us to work on three things that will make a real difference to both your blood sugar and your cholesterol…"</div>
+            </div>
+          </div>
+          <button class="use-case-btn" onclick="loadCase('t2dm', 'Margaret, 58')">📝 Load into DDR Builder →</button>
+        </div>
+      </div><!-- case 1 -->
+
+      <!-- CASE 2 -->
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-avatar">🏃‍♂️</div>
+          <div>
+            <div class="case-name">Jake, 22 years</div>
+            <span class="case-tag">IRON DEFICIENCY ANAEMIA</span>
+          </div>
+        </div>
+        <div class="case-card-body">
+          <div class="case-section-title">Clinical Snapshot</div>
+          <div class="case-text">
+            University student, endurance runner (60 km/wk). Referred by sports physician. Serum ferritin 6 µg/L (↓↓), Hb 108 g/L. Reports declining performance, breathlessness on runs, difficulty concentrating in lectures. Vegetarian for 2 years.
+          </div>
+          <div class="case-section-title">Diet History Highlights</div>
+          <div class="case-text">
+            <ul>
+              <li>No meat/fish; occasional egg (2–3/wk)</li>
+              <li>Breakfast: oats + soy milk + banana</li>
+              <li>Lunch: vegemite sandwich or leftover pasta</li>
+              <li>Dinner: vegetable stir fry with rice or tofu</li>
+              <li>High tea intake (4–5 cups/day, with meals)</li>
+              <li>Rarely eats legumes, seeds, or fortified foods</li>
+            </ul>
+          </div>
+          <div class="case-section-title">Key Nutritional Problems</div>
+          <div class="case-text">Very low haem iron intake; poor dietary iron variety; tannins in tea inhibiting absorption; high physical demand increasing iron losses; no vitamin C pairing strategy.</div>
+        </div>
+        <button class="case-expand-btn" onclick="toggleCase(this)">📖 View DDR Scaffold ▾</button>
+        <div class="case-expanded">
+          <div class="ddr-scaffold">
+            <div class="scaffold-row">
+              <strong>Step 1 — Broad Explanation</strong>
+              <div class="scaffold-text">Explain iron's role: oxygen transport via haemoglobin, energy production, immune function. Distinguish haem vs non-haem iron. Explain how iron stores deplete — stages of deficiency.</div>
+              <div class="scaffold-prompt">💬 "Iron is essential for making haemoglobin — the protein in red blood cells that carries oxygen to your muscles and organs. Without enough iron…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 2 — Link to Jake</strong>
+              <div class="scaffold-text">Reference ferritin (6 µg/L), haemoglobin (108 g/L), performance decline, breathlessness, brain fog. Discuss athlete iron losses (foot-strike haemolysis, sweat losses) compounding dietary deficit.</div>
+              <div class="scaffold-prompt">💬 "Jake, your ferritin — your iron storage — is very low at 6. For an athlete at your training volume, we'd like to see at least 30–40. This is why your runs feel harder…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 3 — Diet Link</strong>
+              <div class="scaffold-text">Low non-haem iron variety; tea 4–5 cups daily with meals blocks absorption (tannins); no vitamin C strategy to enhance non-haem absorption; low total energy for training load.</div>
+              <div class="scaffold-prompt">💬 "Looking at your food diary, I can see a couple of things working against you. The tea you're having with every meal contains compounds called tannins that actually bind to plant iron and stop it being absorbed…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 4 — Goals</strong>
+              <div class="scaffold-text">Goals: (a) increase iron-rich plant foods (legumes, seeds, tofu, fortified cereals); (b) time tea away from meals; (c) pair iron foods with vitamin C sources; (d) discuss supplement need with GP.</div>
+              <div class="scaffold-prompt">💬 "There are three practical things we can do that will meaningfully improve your iron absorption. The good news is they're quite simple changes…"</div>
+            </div>
+          </div>
+          <button class="use-case-btn" onclick="loadCase('ida', 'Jake, 22')">📝 Load into DDR Builder →</button>
+        </div>
+      </div><!-- case 2 -->
+
+      <!-- CASE 3 -->
+      <div class="case-card">
+        <div class="case-card-header">
+          <div class="case-avatar">👩‍💼</div>
+          <div>
+            <div class="case-name">Sandra, 45 years</div>
+            <span class="case-tag">HYPERTENSION · OVERWEIGHT</span>
+          </div>
+        </div>
+        <div class="case-card-body">
+          <div class="case-section-title">Clinical Snapshot</div>
+          <div class="case-text">
+            Full-time nurse, single mother of 2. BP 158/96 mmHg on two readings. BMI 29.4 kg/m². No medication yet — GP wants to trial lifestyle intervention first. Reports high stress, poor sleep (5–6 hrs), emotional eating, and no time to exercise.
+          </div>
+          <div class="case-section-title">Diet History Highlights</div>
+          <div class="case-text">
+            <ul>
+              <li>High processed/convenience food intake</li>
+              <li>Deli meats, canned soups, sauces daily</li>
+              <li>Low fruit and vegetable intake (≤2 serves/day)</li>
+              <li>Minimal dairy or calcium-rich foods</li>
+              <li>3–4 coffees/day with 2 sugars</li>
+              <li>Night snacking during stress (chips, chocolate)</li>
+            </ul>
+          </div>
+          <div class="case-section-title">Key Nutritional Problems</div>
+          <div class="case-text">Very high sodium intake from processed foods; low potassium (low fruit/veg); low calcium and magnesium; high energy-dense, nutrient-poor snacks; excess caffeine potentially elevating BP.</div>
+        </div>
+        <button class="case-expand-btn" onclick="toggleCase(this)">📖 View DDR Scaffold ▾</button>
+        <div class="case-expanded">
+          <div class="ddr-scaffold">
+            <div class="scaffold-row">
+              <strong>Step 1 — Broad Explanation</strong>
+              <div class="scaffold-text">Explain hypertension: how blood pressure works (systolic/diastolic), what drives elevated BP (vessel resistance, fluid volume, cardiac output). Role of sodium and potassium balance.</div>
+              <div class="scaffold-prompt">💬 "Blood pressure is essentially the force of blood pushing against your artery walls. When it stays consistently high, it puts strain on the heart and vessels…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 2 — Link to Sandra</strong>
+              <div class="scaffold-text">Reference her BP readings (158/96 — Stage 2), BMI, stress and sleep deprivation (cortisol → BP), risk of needing medication if not addressed.</div>
+              <div class="scaffold-prompt">💬 "In your case Sandra, your blood pressure at 158/96 is in the range where we really want to act now — before it progresses to needing daily medication…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 3 — Diet Link</strong>
+              <div class="scaffold-text">High sodium from deli meats/soups/sauces; low potassium from minimal fruit/veg (potassium counteracts sodium's BP effect); low calcium/magnesium; stress eating → excess energy.</div>
+              <div class="scaffold-prompt">💬 "When I look at your diet, the biggest driver I can see is sodium — it's coming mostly from processed foods like the deli meats and canned soups, often without us realising…"</div>
+            </div>
+            <div class="scaffold-row">
+              <strong>Step 4 — Goals</strong>
+              <div class="scaffold-text">Goals: (a) swap processed foods for lower-sodium alternatives 3x/week; (b) increase fruit and vegetable serves to 5+/day for potassium; (c) establish a low-sodium, easy dinner routine for busy nights.</div>
+              <div class="scaffold-prompt">💬 "I know you're incredibly time-poor, so I want to give you practical, realistic changes. Three things that research shows can lower BP within weeks…"</div>
+            </div>
+          </div>
+          <button class="use-case-btn" onclick="loadCase('hypertension', 'Sandra, 45')">📝 Load into DDR Builder →</button>
+        </div>
+      </div><!-- case 3 -->
+
+    </div><!-- cases-grid -->
+
+    <div class="ref-section" style="background: var(--uq-gold-pale); border: 1px solid var(--uq-gold);">
+      <div class="ref-title" style="color: var(--uq-purple-dark);">💡 Discussion Questions for the Group</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px;">
+        <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-purple);">
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">The Funnel Check</strong>
+          <div style="font-size:13px; color:var(--text-light); line-height:1.6;">At which step is the DDR most likely to lose the patient's attention? How would you keep them engaged?</div>
+        </div>
+        <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-purple);">
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">Ask First</strong>
+          <div style="font-size:13px; color:var(--text-light); line-height:1.6;">Before Step 1, you should ask the patient what they already know about their condition. Why? What might you hear from Margaret, Jake, or Sandra?</div>
+        </div>
+        <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-purple);">
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">Inpatient Adaptation</strong>
+          <div style="font-size:13px; color:var(--text-light); line-height:1.6;">If Sandra were an inpatient with &lt;2 minutes available, what are the 2 most critical DDR points? How would you deliver them?</div>
+        </div>
+        <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-purple);">
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">Positive Framing</strong>
+          <div style="font-size:13px; color:var(--text-light); line-height:1.6;">Find 1–2 things each patient is already doing well. How would you weave this into the opening summary before the DDR?</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end cases tab -->
+
+
+  <!-- ══ TAB: GUIDE ══ -->
+  <div class="tab-content" id="content-guide">
+
+    <div class="ref-section">
+      <div class="ref-title">🔽 The DDR Funnel — Visual Overview</div>
+      <p style="font-size:14px; color:var(--text-light); margin-bottom:20px; line-height:1.6;">The funnel approach moves from <strong>broad</strong> to <strong>personalised</strong>. Start wide — explain the condition — then narrow down to the specific patient, their diet, and finally the goals. This scaffolded approach helps patients understand <em>why</em> change matters before hearing <em>what</em> to change.</p>
+
+      <div class="funnel-diagram">
+        <div class="funnel-tier">
+          <div class="funnel-tier-num">1</div>
+          <div>
+            <div class="funnel-tier-text">Broad Condition / Problem Explanation</div>
+            <div class="funnel-tier-sub">General pathophysiology — why it matters, what it does to the body</div>
+          </div>
+        </div>
+        <div class="funnel-tier">
+          <div class="funnel-tier-num">2</div>
+          <div>
+            <div class="funnel-tier-text">Narrow — Link to the Patient</div>
+            <div class="funnel-tier-sub">Their symptoms, results, lifestyle. "In your case…"</div>
+          </div>
+        </div>
+        <div class="funnel-tier">
+          <div class="funnel-tier-num">3</div>
+          <div>
+            <div class="funnel-tier-text">Link to Diet / Nutrient Problem</div>
+            <div class="funnel-tier-sub">Connect food diary findings to the condition's progression</div>
+          </div>
+        </div>
+        <div class="funnel-tier">
+          <div class="funnel-tier-num">4</div>
+          <div>
+            <div class="funnel-tier-text">Key Goals (Scaffolded)</div>
+            <div class="funnel-tier-sub">1–3 clear, positive goals. Name them before explaining each.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-section">
+      <div class="ref-title">🧠 Key Principles to Remember</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px;">
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">🙋</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Ask First</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Always check what the patient already understands before you explain. You may be surprised — or you'll know exactly where to start.</p>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">🌟</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Lead with Strengths</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Open with 1–2 things the patient is already doing well. It builds trust and shows you've really listened to their story.</p>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">🔗</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Always Personalise</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Use their name. Use their results. Reference their specific diet diary entries. Generic information doesn't motivate change — personal relevance does.</p>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">🎯</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Name Goals Before Strategies</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Don't dive straight into strategies. Scaffold the intervention by naming all 3 goals first. This prevents info overwhelm and helps patients track the conversation.</p>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">⏱</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Inpatient Rule</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">If you have &lt;2 minutes, distil to: 1 brief DDR point (the most critical why) + 1–2 key strategies. Every word must earn its place.</p>
+        </div>
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">💬</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Confidence Check</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Before summarising, ask: "How confident do you feel about making these changes?" Listen carefully — this reveals what extra support may be needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ref-section">
+      <div class="ref-title">📋 Quick Reference: Condition → Key Nutrients</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:13.5px;">
+          <thead>
+            <tr style="background:var(--uq-purple); color:white;">
+              <th style="padding:12px 16px; text-align:left; border-radius:8px 0 0 0;">Condition</th>
+              <th style="padding:12px 16px; text-align:left;">Key Nutrients / Focus</th>
+              <th style="padding:12px 16px; text-align:left; border-radius:0 8px 0 0;">DDR Core Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--white);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">T2DM</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Total carbohydrate, glycaemic load, dietary fibre, saturated fat</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Carb type/timing/quantity drives blood glucose; fibre slows absorption</td>
+            </tr>
+            <tr style="background:var(--bg);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">CVD / Dyslipidaemia</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Saturated fat, trans fat, omega-3, dietary fibre, plant sterols</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Dietary fat quality changes LDL/HDL ratio; fibre lowers LDL</td>
+            </tr>
+            <tr style="background:var(--white);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">Hypertension</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Sodium, potassium, calcium, magnesium, alcohol</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Sodium retains fluid → raises BP; potassium/Mg counteract this effect</td>
+            </tr>
+            <tr style="background:var(--bg);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">Iron Deficiency Anaemia</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Haem/non-haem iron, vitamin C, inhibitors (tannins, phytates, Ca)</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Low iron stores → reduced oxygen delivery → fatigue, poor performance</td>
+            </tr>
+            <tr style="background:var(--white);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">CKD</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Protein, phosphorus, potassium, sodium, fluid (stage-dependent)</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Kidney can't excrete excess minerals → build-up causes complications</td>
+            </tr>
+            <tr style="background:var(--bg);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">Coeliac Disease</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Gluten avoidance, iron, calcium, B vitamins, dietary fibre</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Gluten triggers intestinal damage → malabsorption of key nutrients</td>
+            </tr>
+            <tr style="background:var(--white);">
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border); font-weight:600; color:var(--uq-purple);">Osteoporosis</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Calcium, vitamin D, protein, magnesium, phosphorus</td>
+              <td style="padding:11px 16px; border-bottom:1px solid var(--border);">Bone continuously remodels — dietary Ca/D insufficient = net bone loss</td>
+            </tr>
+            <tr style="background:var(--bg);">
+              <td style="padding:11px 16px; font-weight:600; color:var(--uq-purple);">IBS</td>
+              <td style="padding:11px 16px;">FODMAPs, dietary fibre type (soluble vs insoluble), fluid</td>
+              <td style="padding:11px 16px;">Fermentable carbohydrates → excess gas/fluid in bowel → symptoms</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- end guide tab -->
+
+</div><!-- end main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ <span id="toastMsg">DDR downloaded!</span></div>
+
+<script>
+// ── QUOTES & AFFIRMATIONS ──
+const quotes = [
+  { text: "The good physician treats the disease; the great physician treats the patient who has the disease.", author: "— William Osler" },
+  { text: "Let food be thy medicine and medicine be thy food.", author: "— Hippocrates" },
+  { text: "Nutrition is not just what we eat. It's everything we do.", author: "— UQ Nutrition Faculty" },
+  { text: "Every patient interaction is a chance to change a life. Show up fully.", author: "— Clinical Educator" },
+  { text: "The art of medicine consists of amusing the patient while nature cures the disease.", author: "— Voltaire" },
+  { text: "A good explanation is the most powerful intervention you have.", author: "— Clinical Educator" },
+  { text: "Small changes, consistently applied, produce extraordinary results.", author: "— Habit Science" },
+  { text: "You are not just teaching patients about food — you are giving them agency over their health.", author: "— UQ Dietetics" },
+];
+
+const affirmations = [
+  { title: "You are more prepared than you think! 🌟", body: "You've covered the science, practised the skills, and shown up today. That puts you ahead of the curve. Trust your knowledge — it's there when you need it." },
+  { title: "Uncertainty is part of the process 💡", body: "The best clinicians aren't the ones who never feel uncertain — they're the ones who ask great questions and know how to find answers. You're already doing that." },
+  { title: "Your empathy is your superpower 💜", body: "Patients remember how you made them feel far more than the content of your advice. Your genuine care for people is something that can't be taught — and you already have it." },
+  { title: "Progress, not perfection 🎯", body: "A perfectly crafted DDR will come with practice. Today, aim for connection, clarity, and one key message that lands. That's a successful consultation." },
+  { title: "Every expert was once a student 🚀", body: "The dietitians you admire were once standing exactly where you are, feeling exactly what you feel. They kept going — and so will you." },
+  { title: "Your voice matters in the clinic 🏥", body: "You bring a fresh perspective, genuine curiosity, and up-to-date evidence. Your CE wants to hear your thinking — share it with confidence." },
+];
+
+let quoteIdx = 0, affirmIdx = 0;
+
+function updateQuote() {
+  const q = quotes[quoteIdx % quotes.length];
+  document.getElementById('quoteText').style.opacity = 0;
+  setTimeout(() => {
+    document.getElementById('quoteText').textContent = '"' + q.text + '"';
+    document.getElementById('quoteAuthor').textContent = q.author;
+    document.getElementById('quoteText').style.opacity = 1;
+  }, 300);
+  quoteIdx++;
+}
+
+function updateAffirmation() {
+  const a = affirmations[affirmIdx % affirmations.length];
+  document.getElementById('affirmTitle').textContent = a.title;
+  document.getElementById('affirmBody').textContent = a.body;
+  affirmIdx++;
+}
+
+updateQuote();
+updateAffirmation();
+setInterval(updateQuote, 8000);
+setInterval(updateAffirmation, 15000);
+
+// ── TABS ──
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('content-' + name).classList.add('active');
+}
+
+// ── STEPS ──
+function toggleStep(n) {
+  const card = document.getElementById('stepCard' + n);
+  card.classList.toggle('open');
+}
+
+// Auto-open step 1
+document.getElementById('stepCard1').classList.add('open');
+
+// ── CONDITION HINTS ──
+const conditionData = {
+  t2dm: { hint: "<strong>Focus on:</strong> Carbohydrate type & quantity, glycaemic index/load, dietary fibre, saturated fat, meal timing, and portion sizes. Key labs: HbA1c, fasting glucose, lipids, BMI." },
+  cvd: { hint: "<strong>Focus on:</strong> Saturated & trans fats, omega-3 fatty acids, dietary cholesterol, soluble fibre, sodium, plant sterols. Key labs: LDL, HDL, triglycerides, hsCRP." },
+  hypertension: { hint: "<strong>Focus on:</strong> Sodium (aim &lt;2000mg/day), potassium (fruit/veg), calcium, magnesium, alcohol, caffeine. DASH diet principles. Key: BP readings, medication status." },
+  obesity: { hint: "<strong>Focus on:</strong> Total energy intake, energy density, eating patterns, meal timing, emotional eating triggers, movement. Key: BMI, waist circumference, metabolic markers." },
+  ckd: { hint: "<strong>Focus on:</strong> Protein (stage-specific), phosphorus, potassium, sodium, fluid restriction (later stages). Key labs: eGFR, creatinine, potassium, phosphate, urea." },
+  ida: { hint: "<strong>Focus on:</strong> Haem vs non-haem iron sources, vitamin C enhancers, absorption inhibitors (tannins, phytates, calcium), total dietary iron variety. Key labs: ferritin, Hb, MCV, transferrin sat." },
+  coeliac: { hint: "<strong>Focus on:</strong> Strict gluten avoidance, secondary deficiencies (iron, calcium, B12, folate, D), fibre from gluten-free grains. Assess label reading skills and cross-contamination." },
+  osteoporosis: { hint: "<strong>Focus on:</strong> Calcium (1000–1300mg/day), vitamin D, protein (muscle-bone connection), magnesium, phosphorus. Consider alcohol, caffeine, smoking effects on bone." },
+  ibs: { hint: "<strong>Focus on:</strong> Low-FODMAP approach (staged elimination/reintroduction), soluble vs insoluble fibre, adequate fluid, stress-gut axis. Symptom diary analysis." },
+  protein: { hint: "<strong>Focus on:</strong> Total protein requirements (0.8–1.6g/kg BW, activity-dependent), protein distribution across day, complete vs incomplete sources, leucine threshold for muscle synthesis." },
+};
+
+function conditionChanged() {
+  const val = document.getElementById('conditionSelect').value;
+  const box = document.getElementById('conditionHintBox');
+  if (val && conditionData[val]) {
+    document.getElementById('condHintBody').innerHTML = conditionData[val].hint;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+  updateProgress();
+}
+
+// ── PROGRESS ──
+function updateProgress() {
+  const fields = [
+    document.getElementById('patientName').value,
+    document.getElementById('conditionSelect').value,
+    document.getElementById('step1text').value,
+    document.getElementById('step2text').value,
+    document.getElementById('step3text').value,
+    document.getElementById('step4text').value,
+  ];
+  const filled = fields.filter(f => f && f.trim().length > 10).length;
+  const pct = Math.round((filled / fields.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function countChars(n) {
+  const len = document.getElementById('step' + n + 'text').value.length;
+  document.getElementById('charCount' + n).textContent = len + ' characters';
+}
+
+// ── CASE STUDIES ──
+function toggleCase(btn) {
+  const expanded = btn.nextElementSibling;
+  const isOpen = expanded.classList.contains('open');
+  expanded.classList.toggle('open');
+  btn.textContent = isOpen ? '📖 View DDR Scaffold ▾' : '📖 Hide DDR Scaffold ▴';
+}
+
+function loadCase(condition, patient) {
+  document.getElementById('conditionSelect').value = condition;
+  document.getElementById('patientName').value = patient;
+  conditionChanged();
+  switchTab('builder');
+  showToast('Case loaded! Work through the funnel steps below. 🎯');
+  setTimeout(() => {
+    document.getElementById('stepCard1').classList.add('open');
+    document.getElementById('step1text').focus();
+  }, 300);
+}
+
+// ── DOWNLOAD ──
+function downloadDDR() {
+  const patient = document.getElementById('patientName').value || 'Unknown Patient';
+  const condition = document.getElementById('conditionSelect');
+  const conditionName = condition.options[condition.selectedIndex]?.text || 'Not specified';
+  const s1 = document.getElementById('step1text').value;
+  const s2 = document.getElementById('step2text').value;
+  const s3 = document.getElementById('step3text').value;
+  const s4 = document.getElementById('step4text').value;
+
+  const now = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  if (!s1 && !s2 && !s3 && !s4) {
+    showToast('Please write your DDR before downloading! ✏️');
+    return;
+  }
+
+  const content = `
+╔═══════════════════════════════════════════════════════════════╗
+║        UQ CLINIC — PERSONALISED DIET-DISEASE RELATIONSHIP     ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Patient:    ${patient}
+Condition:  ${conditionName}
+Date:       ${now}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1 — BROAD CONDITION / PROBLEM EXPLANATION
+───────────────────────────────────────────────
+${s1 || '[Not completed]'}
+
+
+STEP 2 — NARROW DOWN: LINK TO THE PATIENT
+───────────────────────────────────────────
+${s2 || '[Not completed]'}
+
+
+STEP 3 — LINK TO DIET / NUTRIENT PROBLEM
+──────────────────────────────────────────
+${s3 || '[Not completed]'}
+
+
+STEP 4 — KEY GOALS & POSITIVE FRAMING
+───────────────────────────────────────
+${s4 || '[Not completed]'}
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated using UQ Nutrition & Dietetics DDR Builder
+Remember: Ask what the patient already knows before your DDR!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`.trim();
+
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `DDR_${patient.replace(/[^a-z0-9]/gi, '_')}_${condition.value || 'general'}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('DDR downloaded successfully! 🎉');
+}
+
+function clearAll() {
+  if (!confirm('Clear all your DDR work? This cannot be undone.')) return;
+  ['step1text','step2text','step3text','step4text'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('patientName').value = '';
+  document.getElementById('conditionSelect').value = '';
+  document.getElementById('conditionHintBox').style.display = 'none';
+  [1,2,3,4].forEach(n => {
+    document.getElementById('charCount' + n).textContent = '0 characters';
+  });
+  updateProgress();
+  showToast('Cleared! Ready for a new patient. 🔄');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
