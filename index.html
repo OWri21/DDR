@@ -449,6 +449,73 @@
   }
   .progress-pct { font-size: 13px; font-weight: 600; color: var(--uq-gold); min-width: 38px; text-align: right; }
 
+  /* ── PART 2 DIVIDER ── */
+  .part2-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .part2-divider-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--uq-gold), transparent);
+    border-radius: 99px;
+  }
+  .part2-divider-line.right {
+    background: linear-gradient(270deg, var(--uq-gold), transparent);
+  }
+  .part2-badge {
+    background: linear-gradient(135deg, var(--uq-gold), var(--uq-gold-light));
+    color: var(--uq-purple-dark);
+    border-radius: 30px;
+    padding: 7px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── SUMMARY CARD ── */
+  .summary-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border: 2px solid var(--uq-gold);
+    transition: box-shadow 0.2s;
+  }
+  .summary-card:hover { box-shadow: var(--shadow-deep); }
+  .summary-card .step-header {
+    background: linear-gradient(90deg, #6b4c0a, #a07820, var(--uq-gold));
+    color: var(--uq-purple-dark);
+  }
+  .summary-card .step-num {
+    background: rgba(81,36,122,0.2);
+    color: var(--uq-purple-dark);
+    font-size: 13px;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+  }
+  .summary-card .step-title { color: var(--uq-purple-dark); }
+  .summary-card .step-desc { color: rgba(58,24,86,0.75); }
+  .summary-card .step-toggle { color: var(--uq-purple-dark); }
+  .summary-context {
+    background: linear-gradient(135deg, #3a1856 0%, #51247A 100%);
+    color: white;
+    padding: 14px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .summary-context-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .summary-context strong { color: var(--uq-gold-light); display: block; margin-bottom: 4px; font-size: 14px; }
+
   /* ── CASE STUDIES ── */
   .case-intro {
     background: var(--white);
@@ -710,8 +777,8 @@
   </div>
   <div class="header-right">
     <div class="clinic-label">
-      <strong>✦ The Funnel Approach</strong>
-      Broad → Personalised → Dietary Link → Goal
+      <strong>✦ Part 1:</strong> Assessment (with CE)<br>
+      <strong style="color:var(--uq-gold-light);">✦ Part 2:</strong> Summary → DDR → Goals
     </div>
   </div>
 </div>
@@ -784,12 +851,80 @@
       <span class="progress-pct" id="progressPct">0%</span>
     </div>
 
+    <!-- PART 2 DIVIDER -->
+    <div class="part2-divider">
+      <div class="part2-divider-line"></div>
+      <div class="part2-badge">✦ Part 2 — Stepping Back In</div>
+      <div class="part2-divider-line right"></div>
+    </div>
+
+    <!-- SUMMARY CARD -->
+    <div class="summary-card" id="summaryCard">
+      <div class="step-header" onclick="toggleStep('summary')">
+        <div class="step-num" style="font-size:11px; line-height:1.2; text-align:center;">OPEN<br>SUMMARY</div>
+        <div class="step-meta">
+          <div class="step-title">Opening Summary — Re-entering the Consultation</div>
+          <div class="step-desc">The bridge from assessment to intervention — summarise findings, acknowledge strengths, introduce the key problem</div>
+        </div>
+        <span class="step-toggle">▼</span>
+      </div>
+
+      <!-- Context banner -->
+      <div class="summary-context">
+        <span class="summary-context-icon">☕</span>
+        <div>
+          <strong>You've just stepped back in after the break.</strong>
+          This is your re-entry moment. Before diving into the DDR, take 2–3 sentences to re-orient the patient, acknowledge what they're doing well, and signal that you're about to explain why today's goals matter. This is what transforms an awkward restart into a confident, patient-centred transition.
+        </div>
+      </div>
+
+      <div class="step-body">
+        <!-- Sub-section A: Positive acknowledgement -->
+        <div style="margin-bottom: 20px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--uq-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+            ✦ A — Acknowledge What's Going Well (1–2 sentences)
+          </div>
+          <div class="step-guide">
+            <strong>🌟 Lead with a strength:</strong><br>
+            Open with something genuine and specific the patient is already doing well. This isn't flattery — it shows you've listened, builds rapport, and makes the patient more receptive to hearing about the problem.<br><br>
+            <em>"You've made some great progress since we last saw you — you've been [specific positive behaviour], which is really helping with [outcome]."</em><br><br>
+            ✦ Reference a specific behaviour from the diet history or their own goals<br>
+            ✦ Even if diet is largely problematic, find one genuine positive<br>
+            ✦ Keep it brief — 1–2 sentences maximum
+          </div>
+          <textarea class="step-textarea" id="summaryAtext"
+            placeholder="e.g. Margaret, you've made some great changes since we last spoke — you've been cooking dinner at home most nights and you've cut back on the afternoon biscuits to just a couple of times this week, which is a real step in the right direction."
+            oninput="updateProgress(); countChars('summaryA')" style="min-height: 90px;"></textarea>
+          <div class="char-count" id="charCountsummaryA">0 characters</div>
+        </div>
+
+        <!-- Sub-section B: Summary + transition -->
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--uq-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+            ✦ B — Summarise Findings &amp; Introduce the Key Problem (2–4 sentences)
+          </div>
+          <div class="step-guide">
+            <strong>🔍 The bridge statement:</strong><br>
+            Briefly summarise the key finding from the assessment and signal that you're about to explain <em>why</em> it matters and what can be done. This sets up the DDR and gives the patient a clear reason to keep listening.<br><br>
+            <em>"But if we look at the bigger picture, the main thing that stands out to me from everything you've shared today is [key problem]. I'd like to take a few minutes to explain what's happening and why it's worth addressing — and then we'll work together on some practical ways forward."</em><br><br>
+            ✦ One clear, specific problem — don't list everything<br>
+            ✦ Use language that signals partnership: "we'll work on…" not "you need to…"<br>
+            ✦ This sentence is the launchpad for Step 1 of the DDR — end it with a natural segue
+          </div>
+          <textarea class="step-textarea" id="summaryBtext"
+            placeholder="e.g. But looking at today's results alongside what you've shared about your eating, the main thing that stands out is that your blood sugar control hasn't quite reached where we'd like it to be yet — your HbA1c is still elevated, and we can see some clear patterns in your eating that are likely contributing to that. I'd like to spend a few minutes explaining what's going on and why it matters for you, and then we'll look at a few targeted changes that I think will make a real difference. Does that sound okay?"
+            oninput="updateProgress(); countChars('summaryB')" style="min-height: 110px;"></textarea>
+          <div class="char-count" id="charCountsummaryB">0 characters</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Funnel header -->
     <div class="funnel-header">
       <span class="funnel-icon">🔽</span>
       <div>
-        <div class="funnel-title">The DDR Funnel</div>
-        <div class="funnel-subtitle">Work through each step — click a step to expand and write your DDR. Remember to ask what the patient already knows before explaining!</div>
+        <div class="funnel-title">The DDR Funnel — Steps 1 to 4</div>
+        <div class="funnel-subtitle">Now launch into the funnel. Work through each step — click to expand and write your DDR. Remember to ask what the patient already knows before you begin explaining!</div>
       </div>
     </div>
 
@@ -954,6 +1089,11 @@
         <div class="case-expanded">
           <div class="ddr-scaffold">
             <div class="scaffold-row">
+              <strong>Opening Summary — Re-entering the Consultation</strong>
+              <div class="scaffold-text">Acknowledge 1–2 genuine positives (e.g. home cooking, showing up), then bridge to the key finding (HbA1c, weight gain) and signal what's coming.</div>
+              <div class="scaffold-prompt">💬 "Margaret, before we get into things — I noticed you've been cooking dinner at home most nights, which is a real strength. But looking at your results today, the main thing I'd like to walk you through is what's been happening with your blood sugar and why it matters for how you've been feeling…"</div>
+            </div>
+            <div class="scaffold-row">
               <strong>Step 1 — Broad Explanation</strong>
               <div class="scaffold-text">Explain T2DM: insulin resistance, glucose regulation, long-term consequences of hyperglycaemia. Include: dyslipidaemia and how it relates to cardiovascular risk.</div>
               <div class="scaffold-prompt">💬 "Our bodies produce insulin to help cells use glucose for energy. In type 2 diabetes, our cells stop responding well to that signal…"</div>
@@ -1009,6 +1149,11 @@
         <button class="case-expand-btn" onclick="toggleCase(this)">📖 View DDR Scaffold ▾</button>
         <div class="case-expanded">
           <div class="ddr-scaffold">
+            <div class="scaffold-row">
+              <strong>Opening Summary — Re-entering the Consultation</strong>
+              <div class="scaffold-text">Acknowledge his structured eating and training commitment. Bridge to the iron results and performance decline as the key problem.</div>
+              <div class="scaffold-prompt">💬 "Jake, I want to start by saying your eating structure is actually really solid, and maintaining a vegetarian diet while training 60km a week takes real discipline. But when I look at your blood results, there's a clear picture around your iron levels that explains a lot of what's been happening with your runs…"</div>
+            </div>
             <div class="scaffold-row">
               <strong>Step 1 — Broad Explanation</strong>
               <div class="scaffold-text">Explain iron's role: oxygen transport via haemoglobin, energy production, immune function. Distinguish haem vs non-haem iron. Explain how iron stores deplete — stages of deficiency.</div>
@@ -1066,6 +1211,11 @@
         <div class="case-expanded">
           <div class="ddr-scaffold">
             <div class="scaffold-row">
+              <strong>Opening Summary — Re-entering the Consultation</strong>
+              <div class="scaffold-text">Acknowledge her awareness of needing to change and her commitment despite life demands. Bridge to BP as the key problem and signal a practical, realistic approach.</div>
+              <div class="scaffold-prompt">💬 "Sandra, I can see that you're genuinely committed to making changes, and the fact that you've come in today with everything you're juggling means a lot. What I'd like to do is explain what's driving your blood pressure results, because I think it'll make the changes we discuss feel a lot more purposeful — and they're changes we can fit around your real life…"</div>
+            </div>
+            <div class="scaffold-row">
               <strong>Step 1 — Broad Explanation</strong>
               <div class="scaffold-text">Explain hypertension: how blood pressure works (systolic/diastolic), what drives elevated BP (vessel resistance, fluid volume, cardiac output). Role of sodium and potassium balance.</div>
               <div class="scaffold-prompt">💬 "Blood pressure is essentially the force of blood pushing against your artery walls. When it stays consistently high, it puts strain on the heart and vessels…"</div>
@@ -1095,6 +1245,10 @@
     <div class="ref-section" style="background: var(--uq-gold-pale); border: 1px solid var(--uq-gold);">
       <div class="ref-title" style="color: var(--uq-purple-dark);">💡 Discussion Questions for the Group</div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px;">
+        <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-gold);">
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">The Opening Summary</strong>
+          <div style="font-size:13px; color:var(--text-light); line-height:1.6;">After stepping back in, how do you re-orient the patient without it feeling awkward? What makes the difference between a clunky re-entry and a confident one?</div>
+        </div>
         <div style="background:white; border-radius:10px; padding:14px; border-left:4px solid var(--uq-purple);">
           <strong style="color:var(--uq-purple); display:block; margin-bottom:6px;">The Funnel Check</strong>
           <div style="font-size:13px; color:var(--text-light); line-height:1.6;">At which step is the DDR most likely to lose the patient's attention? How would you keep them engaged?</div>
@@ -1122,9 +1276,16 @@
 
     <div class="ref-section">
       <div class="ref-title">🔽 The DDR Funnel — Visual Overview</div>
-      <p style="font-size:14px; color:var(--text-light); margin-bottom:20px; line-height:1.6;">The funnel approach moves from <strong>broad</strong> to <strong>personalised</strong>. Start wide — explain the condition — then narrow down to the specific patient, their diet, and finally the goals. This scaffolded approach helps patients understand <em>why</em> change matters before hearing <em>what</em> to change.</p>
+      <p style="font-size:14px; color:var(--text-light); margin-bottom:20px; line-height:1.6;">The intervention begins with an <strong>Opening Summary</strong> — a confident re-entry after the break where you acknowledge what the patient is doing well and introduce the key problem. This is the bridge from assessment to intervention. Then the funnel moves from <strong>broad</strong> to <strong>personalised</strong>: explain the condition, narrow it to this patient, link it to their diet, and set the goals.</p>
 
       <div class="funnel-diagram">
+        <div class="funnel-tier" style="background:linear-gradient(90deg,#6b4c0a,#a07820,var(--uq-gold));color:var(--uq-purple-dark);max-width:560px;">
+          <div class="funnel-tier-num" style="background:rgba(81,36,122,0.18);color:var(--uq-purple-dark);">☕</div>
+          <div>
+            <div class="funnel-tier-text">Opening Summary — Re-entering the Consultation</div>
+            <div class="funnel-tier-sub">Acknowledge a strength · Summarise key finding · Bridge to the DDR</div>
+          </div>
+        </div>
         <div class="funnel-tier">
           <div class="funnel-tier-num">1</div>
           <div>
@@ -1313,12 +1474,12 @@ function switchTab(name) {
 
 // ── STEPS ──
 function toggleStep(n) {
-  const card = document.getElementById('stepCard' + n);
-  card.classList.toggle('open');
+  const id = n === 'summary' ? 'summaryCard' : 'stepCard' + n;
+  document.getElementById(id).classList.toggle('open');
 }
 
-// Auto-open step 1
-document.getElementById('stepCard1').classList.add('open');
+// Auto-open summary card first
+document.getElementById('summaryCard').classList.add('open');
 
 // ── CONDITION HINTS ──
 const conditionData = {
@@ -1351,6 +1512,8 @@ function updateProgress() {
   const fields = [
     document.getElementById('patientName').value,
     document.getElementById('conditionSelect').value,
+    document.getElementById('summaryAtext').value,
+    document.getElementById('summaryBtext').value,
     document.getElementById('step1text').value,
     document.getElementById('step2text').value,
     document.getElementById('step3text').value,
@@ -1363,7 +1526,14 @@ function updateProgress() {
 }
 
 function countChars(n) {
-  const len = document.getElementById('step' + n + 'text').value.length;
+  // n can be a number (1-4) or a string ('summaryA', 'summaryB')
+  const idMap = {
+    summaryA: 'summaryAtext',
+    summaryB: 'summaryBtext',
+  };
+  const elId = idMap[n] ? idMap[n] : 'step' + n + 'text';
+  const countId = idMap[n] ? 'charCount' + n : 'charCount' + n;
+  const len = document.getElementById(elId).value.length;
   document.getElementById('charCount' + n).textContent = len + ' characters';
 }
 
@@ -1380,10 +1550,31 @@ function loadCase(condition, patient) {
   document.getElementById('patientName').value = patient;
   conditionChanged();
   switchTab('builder');
-  showToast('Case loaded! Work through the funnel steps below. 🎯');
+
+  // Pre-fill summary opening with a case-specific example
+  const summaryOpeners = {
+    't2dm': {
+      a: "Margaret, before we get started — I just want to say that cooking dinner at home most nights is a really positive habit, and the fact that you've been tracking your meals shows great commitment. That kind of self-awareness is actually one of the hardest things to build, and you've already done it.",
+      b: "But looking at everything together — your results, your eating pattern, and how you've been feeling — the main thing that stands out to me is that your blood sugar control hasn't quite reached where we'd like it to be yet. I'd like to take a few minutes to explain what's happening and why it matters for you, and then we'll work out some practical steps together. Does that sound okay?"
+    },
+    'ida': {
+      a: "Jake, I want to start by saying your overall eating structure is actually really solid — you're eating regularly, you've got good variety in your meals, and the fact that you've maintained a vegetarian diet for two years while training at this level takes real discipline.",
+      b: "But when I look at your blood results and how you've been feeling on your runs, there's a clear picture emerging around your iron levels that I'd really like to walk you through. It explains a lot of what's been happening with your performance, and the good news is there are some very targeted changes we can make. Can I take you through what's going on?"
+    },
+    'hypertension': {
+      a: "Sandra, I can see from everything you've shared today that you're incredibly aware of your health and you genuinely want to make changes — even with everything on your plate. The fact that you've shown up today, working full-time and looking after your family, says a lot.",
+      b: "What I'd like to do is take a few minutes to explain what's been driving your blood pressure results, because I think once you understand the 'why,' the changes we're going to discuss will make a lot more sense. And importantly — these are changes we can make to fit around your actual life. Ready to hear what I found?"
+    }
+  };
+
+  const opener = summaryOpeners[condition] || { a: '', b: '' };
+  document.getElementById('summaryAtext').value = opener.a;
+  document.getElementById('summaryBtext').value = opener.b;
+
+  showToast('Case loaded! Start with the Opening Summary, then work through the funnel. 🎯');
   setTimeout(() => {
-    document.getElementById('stepCard1').classList.add('open');
-    document.getElementById('step1text').focus();
+    document.getElementById('summaryCard').classList.add('open');
+    document.getElementById('summaryAtext').focus();
   }, 300);
 }
 
@@ -1392,6 +1583,8 @@ function downloadDDR() {
   const patient = document.getElementById('patientName').value || 'Unknown Patient';
   const condition = document.getElementById('conditionSelect');
   const conditionName = condition.options[condition.selectedIndex]?.text || 'Not specified';
+  const sA = document.getElementById('summaryAtext').value;
+  const sB = document.getElementById('summaryBtext').value;
   const s1 = document.getElementById('step1text').value;
   const s2 = document.getElementById('step2text').value;
   const s3 = document.getElementById('step3text').value;
@@ -1399,7 +1592,7 @@ function downloadDDR() {
 
   const now = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  if (!s1 && !s2 && !s3 && !s4) {
+  if (!sA && !sB && !s1 && !s2 && !s3 && !s4) {
     showToast('Please write your DDR before downloading! ✏️');
     return;
   }
@@ -1413,6 +1606,22 @@ Patient:    ${patient}
 Condition:  ${conditionName}
 Date:       ${now}
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 2 OPENING — SUMMARY & TRANSITION (Re-entering the consultation)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A — POSITIVE ACKNOWLEDGEMENT
+─────────────────────────────
+${sA || '[Not completed]'}
+
+
+B — SUMMARY OF FINDINGS & TRANSITION TO DDR
+─────────────────────────────────────────────
+${sB || '[Not completed]'}
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+THE DDR FUNNEL
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 STEP 1 — BROAD CONDITION / PROBLEM EXPLANATION
@@ -1437,7 +1646,7 @@ ${s4 || '[Not completed]'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Generated using UQ Nutrition & Dietetics DDR Builder
-Remember: Ask what the patient already knows before your DDR!
+Tip: Ask what the patient already knows before launching into Step 1!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `.trim();
 
@@ -1453,13 +1662,13 @@ Remember: Ask what the patient already knows before your DDR!
 
 function clearAll() {
   if (!confirm('Clear all your DDR work? This cannot be undone.')) return;
-  ['step1text','step2text','step3text','step4text'].forEach(id => {
+  ['summaryAtext','summaryBtext','step1text','step2text','step3text','step4text'].forEach(id => {
     document.getElementById(id).value = '';
   });
   document.getElementById('patientName').value = '';
   document.getElementById('conditionSelect').value = '';
   document.getElementById('conditionHintBox').style.display = 'none';
-  [1,2,3,4].forEach(n => {
+  ['summaryA','summaryB',1,2,3,4].forEach(n => {
     document.getElementById('charCount' + n).textContent = '0 characters';
   });
   updateProgress();
