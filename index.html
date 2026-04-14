@@ -311,7 +311,8 @@
     overflow: hidden;
     transition: max-height 0.35s ease, padding 0.3s;
   }
-  .step-card.open .step-body { max-height: 600px; padding: 18px 22px 22px; }
+  .step-card.open .step-body { max-height: 2000px; padding: 18px 22px 22px; }
+  .summary-card.open .step-body { max-height: 2000px; padding: 18px 22px 22px; }
 
   .step-guide {
     background: var(--bg);
@@ -984,22 +985,54 @@
         <div class="step-header" onclick="toggleStep(3)">
           <div class="step-num">3</div>
           <div class="step-meta">
-            <div class="step-title">Link to Diet / Nutrient Problem</div>
-            <div class="step-desc">Bridge the gap — show how current diet patterns are driving the condition</div>
+            <div class="step-title">The Mechanism — Diet → Physiology → Disease</div>
+            <div class="step-desc">Two distinct outputs: written clinical statement first, then verbal patient explanation</div>
           </div>
           <span class="step-toggle">▼</span>
         </div>
         <div class="step-body">
-          <div class="step-guide">
-            <strong>🥗 The dietary connection:</strong><br>
-            Use examples from the diet history to show the pathway from food choices → nutrient issue → condition worsening.<br><br>
-            <em>"The reason is because there is a lack of [food/nutrient] in your current diet… specifically when I look at your food diary, I can see [specific examples]…"</em><br><br>
-            ✦ Reference specific meals or patterns from their diet history<br>
-            ✦ Avoid blame — frame as "what we can work on"<br>
-            ✦ Introduce what a change could look like
+
+          <!-- Warning callout -->
+          <div style="background:var(--uq-purple-dark);color:white;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.7;">
+            <strong style="color:var(--uq-gold-light);display:block;margin-bottom:5px;font-size:14px;">⚠️ Step 3 = clinical reasoning — not dietary advice, not patient education</strong>
+            The mechanism statement and the verbal explanation are two <em>different</em> outputs. Students commonly mix them up. Write the clinical statement first, then translate it for the patient. What gets marked in assessments is the written mechanism — concise, biological, third-person.
           </div>
-          <textarea class="step-textarea" id="step3text" placeholder="e.g. Looking at your food diary, I can see a few patterns that are likely contributing. Firstly, your breakfast is often skipped or just a piece of toast, which means your body goes into glucose-conservation mode and then gets a large glucose spike when you have your big lunch. Secondly, the afternoon snacks tend to be high in refined carbohydrates — the crackers and juice — which cause rapid blood sugar spikes without much fibre to slow them down. Additionally, the evening meal portions are quite large, which means a lot of glucose arriving in the bloodstream when activity is lowest..." oninput="updateProgress(); countChars(3)"></textarea>
-          <div class="char-count" id="charCount3">0 characters</div>
+
+          <!-- Part A: Written mechanism statement -->
+          <div style="margin-bottom:22px;">
+            <div style="font-size:12px;font-weight:700;color:var(--uq-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">✦ A — Written Mechanism Statement (clinical language — what you write / what is assessed)</div>
+            <div class="step-guide">
+              <strong>Format: [Dietary factor] → [Physiological process] → [Disease outcome]</strong><br><br>
+              ✦ Start with the <em>dietary factor</em> — not the disease<br>
+              ✦ End with the <em>disease outcome</em> (e.g. "leading to iron deficiency anaemia")<br>
+              ✦ Written in third-person, clinical language<br>
+              ✦ Concise — if the mechanism is visible and accurate, you have enough. Less is more.<br><br>
+              ❌ <strong>Do NOT include in the mechanism statement:</strong> dietary recommendations ("increase haem iron"), client-facing or counselling language, descriptions of symptoms or fatigue, background nutrition education (food sources, serving sizes), or extra clinical context not part of the biological mechanism.<br><br>
+              <strong>Model example — Iron Deficiency Anaemia:</strong><br>
+              <em style="color:var(--uq-purple);">"Low intake of haem iron reduces the availability of highly bioavailable iron for absorption. Concurrent consumption of calcium-rich foods inhibits intestinal iron absorption through competitive interactions, further reducing iron bioavailability. Together, reduced iron intake and impaired absorption limit iron availability for haemoglobin synthesis, leading to iron deficiency anaemia."</em>
+            </div>
+            <textarea class="step-textarea" id="step3text"
+              placeholder="Write your clinical mechanism statement here...&#10;&#10;Format: [Dietary factor] → [physiological process] → [disease outcome]&#10;&#10;e.g. Skipping breakfast and consuming large refined-carbohydrate meals causes rapid postprandial glucose rises. These repeated glucose spikes trigger excessive insulin secretion; over time, target cells develop reduced sensitivity to insulin. This impaired insulin signalling results in persistently elevated blood glucose, contributing to poor glycaemic control in type 2 diabetes."
+              oninput="updateProgress(); countChars(3)" style="font-family:'DM Mono',monospace;font-size:13px;min-height:130px;"></textarea>
+            <div class="char-count" id="charCount3">0 characters</div>
+          </div>
+
+          <!-- Part B: Verbal explanation -->
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--uq-gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">✦ B — Verbal Explanation to the Patient (accessible language — for the consultation)</div>
+            <div class="step-guide">
+              <strong>Now translate the mechanism into language the patient can understand:</strong><br>
+              Use the clinical statement above as your foundation. Reframe it accessibly — use their name, reference specific examples from their food diary, and connect it to their experience.<br><br>
+              <em>"The reason this matters is because [accessible version of mechanism]… and when I look at your food diary specifically, I can see [specific examples] that show this pattern…"</em><br><br>
+              ✦ This is where personalisation, empathy, and diet history examples live<br>
+              ✦ This is NOT what gets written as the mechanism in your chart note or assessment — it is how you communicate it clinically
+            </div>
+            <textarea class="step-textarea" id="step3btext"
+              placeholder="e.g. The reason this is significant Margaret, is that your body's cells have gradually become less responsive to insulin — like a key that no longer fits the lock properly. And when I look at your food diary, the pattern is really clear: skipping breakfast means your body is running on empty, and then the large carbohydrate lunch delivers a sudden rush of glucose that your insulin can't manage efficiently. Each time this happens, it adds to the overall picture we're seeing in your blood results..." 
+              oninput="countChars('3b')" style="min-height:110px;"></textarea>
+            <div class="char-count" id="charCount3b">0 characters</div>
+          </div>
+
         </div>
       </div>
 
@@ -1104,9 +1137,11 @@
               <div class="scaffold-prompt">💬 "In your case Margaret, your HbA1c tells us your average blood sugar has been elevated for several months now. The fatigue you mentioned makes total sense…"</div>
             </div>
             <div class="scaffold-row">
-              <strong>Step 3 — Diet Link</strong>
-              <div class="scaffold-text">Connect skipped breakfast → large lunch glucose spike; high refined carbs + low fibre; alcohol → triglycerides; saturated fat in afternoon snacks → LDL.</div>
-              <div class="scaffold-prompt">💬 "When I look at your food diary, the skipped breakfast followed by the large carbohydrate lunch is likely causing significant glucose spikes…"</div>
+              <strong>Step 3A — Mechanism Statement (clinical language)</strong>
+              <div class="scaffold-text">Format: [Dietary factor] → [Physiological process] → [Disease outcome]. Third-person, no advice, no patient language.</div>
+              <div class="scaffold-prompt" style="border-left-color:var(--uq-purple);color:var(--uq-purple-dark);font-style:normal;font-family:'DM Mono',monospace;font-size:12px;">📋 "Habitual consumption of large refined carbohydrate meals with irregular timing produces repeated postprandial glucose spikes, driving hyperinsulinaemia and progressive insulin resistance, resulting in poor glycaemic control. High saturated fat intake from processed meats and full-fat dairy raises LDL cholesterol through upregulation of hepatic cholesterol synthesis. Excess alcohol consumption elevates serum triglycerides via increased hepatic VLDL production, contributing to combined dyslipidaemia."</div>
+              <strong style="color:var(--uq-purple-light);display:block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;">STEP 3B — Verbal Explanation (patient-facing)</strong>
+              <div class="scaffold-prompt">💬 "When I look at your food diary, the skipped breakfast followed by the large carbohydrate lunch is likely causing significant glucose spikes — and over time, this pattern is what drives insulin resistance. The afternoon snacks and the wine most nights are also contributing to your cholesterol and triglyceride results…"</div>
             </div>
             <div class="scaffold-row">
               <strong>Step 4 — Goals</strong>
@@ -1165,9 +1200,11 @@
               <div class="scaffold-prompt">💬 "Jake, your ferritin — your iron storage — is very low at 6. For an athlete at your training volume, we'd like to see at least 30–40. This is why your runs feel harder…"</div>
             </div>
             <div class="scaffold-row">
-              <strong>Step 3 — Diet Link</strong>
-              <div class="scaffold-text">Low non-haem iron variety; tea 4–5 cups daily with meals blocks absorption (tannins); no vitamin C strategy to enhance non-haem absorption; low total energy for training load.</div>
-              <div class="scaffold-prompt">💬 "Looking at your food diary, I can see a couple of things working against you. The tea you're having with every meal contains compounds called tannins that actually bind to plant iron and stop it being absorbed…"</div>
+              <strong>Step 3A — Mechanism Statement (clinical language)</strong>
+              <div class="scaffold-text">Format: [Dietary factor] → [Physiological process] → [Disease outcome]. Third-person, no advice, no patient language.</div>
+              <div class="scaffold-prompt" style="border-left-color:var(--uq-purple);color:var(--uq-purple-dark);font-style:normal;font-family:'DM Mono',monospace;font-size:12px;">📋 "Low dietary intake of non-haem iron provides insufficient substrate for intestinal absorption. Concurrent consumption of tea at mealtimes introduces tannins and polyphenols that form insoluble complexes with non-haem iron in the gastrointestinal tract, directly inhibiting absorption. Absence of vitamin C pairing further limits non-haem iron bioavailability. Together, inadequate iron intake and impaired absorption reduce iron availability for haemoglobin synthesis, leading to iron deficiency anaemia."</div>
+              <strong style="color:var(--uq-purple-light);display:block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;">STEP 3B — Verbal Explanation (patient-facing)</strong>
+              <div class="scaffold-prompt">💬 "The tea you're having with every meal contains compounds called tannins that bind to plant iron and stop it being absorbed before your body can use it. And because you're not eating meat, the iron in your diet is already harder to absorb — so it's a compounding problem. There's no vitamin C in your meals to help offset that either…"</div>
             </div>
             <div class="scaffold-row">
               <strong>Step 4 — Goals</strong>
@@ -1226,9 +1263,11 @@
               <div class="scaffold-prompt">💬 "In your case Sandra, your blood pressure at 158/96 is in the range where we really want to act now — before it progresses to needing daily medication…"</div>
             </div>
             <div class="scaffold-row">
-              <strong>Step 3 — Diet Link</strong>
-              <div class="scaffold-text">High sodium from deli meats/soups/sauces; low potassium from minimal fruit/veg (potassium counteracts sodium's BP effect); low calcium/magnesium; stress eating → excess energy.</div>
-              <div class="scaffold-prompt">💬 "When I look at your diet, the biggest driver I can see is sodium — it's coming mostly from processed foods like the deli meats and canned soups, often without us realising…"</div>
+              <strong>Step 3A — Mechanism Statement (clinical language)</strong>
+              <div class="scaffold-text">Format: [Dietary factor] → [Physiological process] → [Disease outcome]. Third-person, no advice, no patient language.</div>
+              <div class="scaffold-prompt" style="border-left-color:var(--uq-purple);color:var(--uq-purple-dark);font-style:normal;font-family:'DM Mono',monospace;font-size:12px;">📋 "High dietary sodium intake from processed and convenience foods promotes renal sodium and water retention, increasing extracellular fluid volume and elevating blood pressure via increased cardiac preload and systemic vascular resistance. Concurrent low potassium intake from inadequate fruit and vegetable consumption diminishes the counter-regulatory effect of potassium on sodium-mediated vasoconstriction. Together, elevated sodium and insufficient potassium intake sustain chronically elevated blood pressure, consistent with Stage 2 hypertension."</div>
+              <strong style="color:var(--uq-purple-light);display:block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.5px;">STEP 3B — Verbal Explanation (patient-facing)</strong>
+              <div class="scaffold-prompt">💬 "When I look at your diet Sandra, the biggest driver I can see is sodium — it's mostly coming from the deli meats, canned soups, and sauces, often without us realising. Sodium makes your body hold onto fluid, which pushes your blood pressure up. And the low fruit and vegetable intake means you're missing the potassium that actually helps counteract that effect…"</div>
             </div>
             <div class="scaffold-row">
               <strong>Step 4 — Goals</strong>
@@ -1303,8 +1342,8 @@
         <div class="funnel-tier">
           <div class="funnel-tier-num">3</div>
           <div>
-            <div class="funnel-tier-text">Link to Diet / Nutrient Problem</div>
-            <div class="funnel-tier-sub">Connect food diary findings to the condition's progression</div>
+            <div class="funnel-tier-text">The Mechanism — Why Diet Drives This Disease</div>
+            <div class="funnel-tier-sub">Biological pathway first ([diet] → [process] → [disease]), then food diary evidence</div>
           </div>
         </div>
         <div class="funnel-tier">
@@ -1320,6 +1359,11 @@
     <div class="ref-section">
       <div class="ref-title">🧠 Key Principles to Remember</div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:14px;">
+        <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
+          <div style="font-size:22px; margin-bottom:8px;">🔬</div>
+          <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Mechanism Is the Heart of the DDR</strong>
+          <p style="font-size:13px; color:var(--text-light); line-height:1.6;">Step 3 must explain the biological pathway — [dietary pattern] → [physiological process] → [disease effect]. Without this, you have a list of dietary problems, not a diet-disease relationship. The mechanism is what makes your clinical reasoning defensible.</p>
+        </div>
         <div style="border:1px solid var(--border); border-radius:10px; padding:16px;">
           <div style="font-size:22px; margin-bottom:8px;">🙋</div>
           <strong style="color:var(--uq-purple); display:block; margin-bottom:6px; font-size:14px;">Ask First</strong>
@@ -1526,15 +1570,17 @@ function updateProgress() {
 }
 
 function countChars(n) {
-  // n can be a number (1-4) or a string ('summaryA', 'summaryB')
+  // n can be a number (1-4), a string ('summaryA', 'summaryB'), or '3b'
   const idMap = {
     summaryA: 'summaryAtext',
     summaryB: 'summaryBtext',
+    '3b':     'step3btext',
   };
-  const elId = idMap[n] ? idMap[n] : 'step' + n + 'text';
-  const countId = idMap[n] ? 'charCount' + n : 'charCount' + n;
-  const len = document.getElementById(elId).value.length;
-  document.getElementById('charCount' + n).textContent = len + ' characters';
+  const elId   = idMap[n] ? idMap[n] : 'step' + n + 'text';
+  const cntId  = 'charCount' + n;
+  const el = document.getElementById(elId);
+  const cc = document.getElementById(cntId);
+  if (el && cc) cc.textContent = el.value.length + ' characters';
 }
 
 // ── CASE STUDIES ──
@@ -1588,6 +1634,7 @@ function downloadDDR() {
   const s1 = document.getElementById('step1text').value;
   const s2 = document.getElementById('step2text').value;
   const s3 = document.getElementById('step3text').value;
+  const s3b = document.getElementById('step3btext')?.value || '';
   const s4 = document.getElementById('step4text').value;
 
   const now = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1607,7 +1654,7 @@ Condition:  ${conditionName}
 Date:       ${now}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PART 2 OPENING — SUMMARY & TRANSITION (Re-entering the consultation)
+PART 2 OPENING — SUMMARY & TRANSITION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 A — POSITIVE ACKNOWLEDGEMENT
@@ -1634,11 +1681,15 @@ STEP 2 — NARROW DOWN: LINK TO THE PATIENT
 ${s2 || '[Not completed]'}
 
 
-STEP 3 — LINK TO DIET / NUTRIENT PROBLEM
-──────────────────────────────────────────
+STEP 3A — MECHANISM STATEMENT (clinical language: diet → physiology → disease)
+────────────────────────────────────────────────────────────────────────────────
 ${s3 || '[Not completed]'}
 
+${s3b ? `STEP 3B — VERBAL EXPLANATION TO PATIENT (accessible language for the consultation)
+──────────────────────────────────────────────────────────────────────────────────────
+${s3b}
 
+` : ''}
 STEP 4 — KEY GOALS & POSITIVE FRAMING
 ───────────────────────────────────────
 ${s4 || '[Not completed]'}
@@ -1646,7 +1697,8 @@ ${s4 || '[Not completed]'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Generated using UQ Nutrition & Dietetics DDR Builder
-Tip: Ask what the patient already knows before launching into Step 1!
+Step 3A = clinical mechanism statement (what is assessed in written work)
+Step 3B = verbal explanation to patient (consultation practice)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `.trim();
 
@@ -1662,14 +1714,16 @@ Tip: Ask what the patient already knows before launching into Step 1!
 
 function clearAll() {
   if (!confirm('Clear all your DDR work? This cannot be undone.')) return;
-  ['summaryAtext','summaryBtext','step1text','step2text','step3text','step4text'].forEach(id => {
-    document.getElementById(id).value = '';
+  ['summaryAtext','summaryBtext','step1text','step2text','step3text','step3btext','step4text'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
   document.getElementById('patientName').value = '';
   document.getElementById('conditionSelect').value = '';
   document.getElementById('conditionHintBox').style.display = 'none';
-  ['summaryA','summaryB',1,2,3,4].forEach(n => {
-    document.getElementById('charCount' + n).textContent = '0 characters';
+  ['summaryA','summaryB',1,2,3,'3b',4].forEach(n => {
+    const el = document.getElementById('charCount' + n);
+    if (el) el.textContent = '0 characters';
   });
   updateProgress();
   showToast('Cleared! Ready for a new patient. 🔄');
@@ -1685,3 +1739,4 @@ function showToast(msg) {
 </script>
 </body>
 </html>
+
